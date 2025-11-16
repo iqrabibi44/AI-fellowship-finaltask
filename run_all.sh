@@ -1,0 +1,13 @@
+#!/bin/bash
+echo "Start backend and frontend in two separate terminals."
+echo "Backend:"
+echo "  cd backend/app"
+echo "  python3 -m venv venv && source venv/bin/activate"
+echo "  pip install -r requirements.txt"
+echo "  uvicorn main:app --reload --host 0.0.0.0 --port 8000"
+echo ""
+echo "Frontend:"
+echo "  cd frontend"
+echo "  python3 -m venv venv && source venv/bin/activate"
+echo "  pip install -r requirements.txt"
+echo "  streamlit run streamlit_app.py"

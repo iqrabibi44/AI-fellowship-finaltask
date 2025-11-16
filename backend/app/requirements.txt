@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+httpx
+python-multipart
+python-dotenv
+google-generativeai
+faiss-cpu
+tqdm
+pymupdf
+pydantic
+requests
