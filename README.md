@@ -1,124 +1,189 @@
 # Shifra AI — Smart Academic Assistant
 
-Shifra AI is an intelligent academic assistant designed to help students and educators interact with lecture notes and documents through natural language conversations. Built as a local MVP, it combines PDF ingestion, vector-based search, and AI-powered chat to provide contextual answers from uploaded academic materials.
+Shifra AI is an intelligent academic assistant designed to help students and researchers interact with their lecture notes and documents through natural language conversations. The system allows users to upload PDF documents, extract and index their content using vector embeddings, and query the information via a chat interface powered by Google's Gemini AI.
 
 ## Features
 
-- **PDF Ingestion**: Upload and process PDF documents (e.g., lecture notes) into searchable chunks.
-- **Vector Search**: Uses FAISS vector database with Gemini embeddings for efficient semantic search.
-- **AI Chat**: Conversational interface powered by Google's Gemini AI model for intelligent responses.
-- **Voice Input**: Supports speech-to-text for hands-free interaction.
-- **Session Management**: Maintains conversation history and user sessions.
-- **Cross-Platform**: Runs locally on Linux, macOS, and Windows (with some dependencies noted).
-- **FastAPI Backend**: RESTful API for scalable integrations.
-- **Streamlit Frontend**: User-friendly web interface for chat and uploads.
+- **PDF Document Ingestion**: Upload and process PDF files (lecture notes, research papers, textbooks) to extract text and create searchable vector embeddings.
+- **Intelligent Chat Assistant**: Engage in conversational AI interactions using Google's Gemini 1.5 Flash model for contextual responses.
+- **Vector Search**: Utilize FAISS (Facebook AI Similarity Search) for efficient similarity search across document chunks.
+- **Voice Input**: Support for speech-to-text input using Google Speech Recognition.
+- **Session Management**: Maintain conversation history and document context across sessions.
+- **CORS-Enabled API**: RESTful FastAPI backend with proper CORS configuration for web integration.
+- **Responsive Web UI**: Streamlit-based frontend with a clean, academic-focused interface.
 
 ## Architecture
 
-The application consists of two main components:
-
 ### Backend (FastAPI)
-- **main.py**: Core API endpoints for PDF upload, querying, and AI chat.
-- **ai_assistant.py**: Handles AI interactions using Google Generative AI (Gemini).
-- **vector_store.py**: Manages FAISS index and embeddings for document search.
-- **pdf_ingest.py**: Extracts and chunks text from PDF files using PyMuPDF.
-- **utils.py**: Utility functions for text chunking and environment configuration.
+- **Endpoints**:
+  - `POST /upload_pdf`: Upload and process PDF files
+  - `POST /query`: Search indexed documents
+  - `GET /assistant/greet`: Get AI assistant greeting
+  - `POST /assistant/chat`: Chat with AI assistant
+- **Components**:
+  - PDF text extraction using PyMuPDF
+  - Text chunking with configurable overlap
+  - Gemini embeddings for vectorization
+  - FAISS index for similarity search
+  - Conversation history management
 
 ### Frontend (Streamlit)
-- **streamlit_app.py**: Web interface for chat, voice input, and PDF uploads.
-- Integrates with backend via HTTP requests.
+- Chat interface with message history
+- PDF upload with progress feedback
+- Voice input capability
+- Session state management
+- Responsive design with academic theme
 
-### Data Flow
-1. PDFs are uploaded via Streamlit and processed into text chunks.
-2. Chunks are embedded using Gemini and stored in FAISS index.
-3. User queries are embedded and searched against the index.
-4. Relevant context is passed to Gemini for generating responses.
+## Tech Stack
+
+- **Backend**: Python 3.9+, FastAPI, Uvicorn, FAISS, Google Generative AI (Gemini)
+- **Frontend**: Streamlit, Python
+- **AI/ML**: Google Gemini 1.5 Flash (chat), Gemini Text Embedding 004 (embeddings)
+- **Document Processing**: PyMuPDF (Fitz)
+- **Vector Database**: FAISS (in-memory)
+- **Speech Recognition**: Google Speech Recognition
+- **Deployment**: Railway (backend), Streamlit Cloud (frontend)
 
 ## Prerequisites
 
-- Python 3.8+
-- Gemini API Key (from Google AI Studio)
-- Virtual environment support (venv)
+- Python 3.9 or higher
+- Google Gemini API key (get from [Google AI Studio](https://makersuite.google.com/app/apikey))
+- Git (for cloning the repository)
 
-## Installation
+## Local Development Setup
 
-1. **Clone or Download the Project**:
-   - Unzip the archive and navigate to the project directory: `cd shifraai`
+### Backend Setup
+1. Navigate to the backend directory:
+   ```bash
+   cd backend/app
+   ```
 
-2. **Backend Setup**:
-   - Navigate to backend directory: `cd backend/app`
-   - Create virtual environment: `python3 -m venv venv`
-   - Activate environment:
-     - Linux/macOS: `source venv/bin/activate`
-     - Windows: `venv\Scripts\activate`
-   - Install dependencies: `pip install -r requirements.txt`
-   - Configure API key: Copy `.env.example` to `.env` and add your `GEMINI_API_KEY`
+2. Create and activate virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
-3. **Frontend Setup**:
-   - Open a new terminal and navigate to frontend: `cd frontend`
-   - Create virtual environment: `python3 -m venv venv`
-   - Activate environment (same as above)
-   - Install dependencies: `pip install -r requirements.txt`
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Create environment file:
+   ```bash
+   cp .env.example .env
+   ```
+   Edit `.env` and add your `GEMINI_API_KEY`.
+
+5. Run the backend server:
+   ```bash
+   uvicorn main:app --reload --host 0.0.0.0 --port 8000
+   ```
+
+### Frontend Setup
+1. Open a new terminal and navigate to frontend:
+   ```bash
+   cd frontend
+   ```
+
+2. Create and activate virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Run the Streamlit app:
+   ```bash
+   streamlit run streamlit_app.py
+   ```
+
+5. Open your browser to `http://localhost:8501`
 
 ## Usage
 
-1. **Start Backend**:
-   - From `backend/app`: `uvicorn main:app --reload --host 0.0.0.0 --port 8000`
+1. **Upload Documents**: Use the upload section to add PDF files containing your lecture notes or study materials.
 
-2. **Start Frontend**:
-   - From `frontend`: `streamlit run streamlit_app.py`
+2. **Chat with AI**: Start a conversation by typing questions or using voice input. The AI can reference uploaded documents in its responses.
 
-3. **Access Application**:
-   - Open Streamlit interface at `http://localhost:8501`
-   - Upload PDF documents in the sidebar
-   - Chat with the AI assistant, referencing uploaded content
+3. **Query Documents**: Ask specific questions about your uploaded content, such as "Explain the concept from page 5" or "Summarize the key points from lecture 3".
 
-### Example Workflow
-- Upload lecture notes PDFs
-- Ask questions like: "Explain the concept of X from lecture 3"
-- Use voice input for hands-free interaction
-- AI responds with context from uploaded documents
+4. **Voice Interaction**: Click the "Speak" button to use voice input for hands-free interaction.
 
-## API Endpoints
+## Deployment
 
-### PDF Operations
-- `POST /upload_pdf`: Upload and index PDF files
-  - Parameters: `file` (PDF), `user_id` (string)
-  - Returns: Status and number of indexed chunks
+### Backend (Railway)
+1. Sign up at [Railway.app](https://railway.app)
+2. Connect your GitHub repository
+3. Railway will automatically detect the `railway.json` configuration
+4. Set environment variable: `GEMINI_API_KEY=your_api_key_here`
+5. Deploy - Railway will provide a production URL
 
-- `POST /query`: Search indexed documents
-  - Parameters: `session_id` (optional), `user_id`, `query`
-  - Returns: Search results and session ID
-
-### AI Assistant
-- `GET /assistant/greet`: Get greeting message
-  - Returns: Welcome message from AI
-
-- `POST /assistant/chat`: Send message to AI
-  - Body: `{"user_input": "Your message"}`
-  - Returns: AI response
+### Frontend (Streamlit Cloud)
+1. Go to [share.streamlit.io](https://share.streamlit.io)
+2. Connect your GitHub repository
+3. Set the `BACKEND_URL` secret to your Railway backend URL
+4. Deploy the app
 
 ## Configuration
 
-Environment variables (set in `backend/app/.env`):
-- `GEMINI_API_KEY`: Your Google Gemini API key
-- `MODEL_CHAT`: Chat model (default: 'gemini-1.5-flash')
-- `MODEL_EMBED`: Embedding model (default: 'text-embedding-004')
+### Environment Variables
+- `GEMINI_API_KEY`: Your Google Gemini API key (required)
+- `MODEL_CHAT`: Chat model (default: gemini-1.5-flash)
+- `MODEL_EMBED`: Embedding model (default: text-embedding-004)
+- `BACKEND_URL`: Backend API URL for frontend (default: localhost:8000)
 
-## Notes
+### Text Chunking
+- Chunk size: 400 tokens
+- Overlap: 50 tokens
+- Adjustable in `utils.py`
 
-- **Windows Compatibility**: FAISS installation may require additional setup; consider alternatives like ChromaDB for Windows.
-- **Security**: This is an MVP for local use. Add authentication and error handling for production.
-- **Performance**: Large PDFs may take time to process; optimize chunk sizes as needed.
-- **Dependencies**: Ensure all requirements are installed in isolated virtual environments.
+## API Documentation
+
+Once the backend is running, visit `http://localhost:8000/docs` for interactive API documentation powered by Swagger UI.
+
+## Troubleshooting
+
+### Common Issues
+- **FAISS Installation**: On Windows, FAISS can be tricky. Consider using alternatives like ChromaDB or Pinecone for production.
+- **API Key Errors**: Ensure your Gemini API key is valid and has sufficient quota.
+- **PDF Processing**: Only PDF files are supported. Ensure files are not corrupted.
+- **Voice Input**: Requires microphone access and internet connection for Google Speech Recognition.
+
+### Performance Notes
+- Vector search is performed in-memory using FAISS
+- Large document collections may require external vector databases
+- API rate limits apply to Gemini services
 
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make changes and test locally
-4. Submit a pull request
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Make your changes and test thoroughly
+4. Commit your changes: `git commit -am 'Add some feature'`
+5. Push to the branch: `git push origin feature/your-feature`
+6. Submit a pull request
 
 ## License
 
-This project is provided as-is for educational and demonstration purposes. See individual component licenses for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Google Generative AI for powering the conversational capabilities
+- Facebook AI for FAISS vector search library
+- Streamlit for the web framework
+- FastAPI for the robust API framework
+
+## Future Enhancements
+
+- Multi-user authentication and session isolation
+- Support for additional document formats (DOCX, TXT)
+- Persistent vector storage with database integration
+- Advanced RAG techniques for better context retrieval
+- Integration with learning management systems
+- Mobile app companion
