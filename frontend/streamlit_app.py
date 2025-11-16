@@ -6,7 +6,7 @@ import tempfile
 import speech_recognition as sr
 from PIL import Image
 
-BACKEND = os.environ.get('BACKEND_URL','http://localhost:8000')
+BACKEND = os.environ.get('BACKEND_URL','https://shifra-ai-backend.herokuapp.com')
 
 st.set_page_config(page_title='Shifra AI', layout='wide')
 st.markdown("<h1 style='color:#00FFC6'>🤖 Shifra AI — Smart Academic Assistant</h1>", unsafe_allow_html=True)
